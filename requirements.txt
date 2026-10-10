@@ -1,0 +1,13 @@
+# GP-модели: RR-BLUP / GBLUP / BRR / BayesA с нуля
+# Python 3.11+; numba требует numpy < 2.3
+numpy==2.2.6
+scipy>=1.11
+pandas>=2.0
+matplotlib>=3.8
+scikit-learn>=1.3
+numba>=0.59
+pyreadr>=0.5
+jupyter>=1.0
+ipykernel>=6.25
+nbformat>=5.9
+nbconvert>=7.0
