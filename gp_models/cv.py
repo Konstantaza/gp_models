@@ -31,6 +31,20 @@ def metrics(y_true, y_pred):
     return r, rmse
 
 
+def topk_overlap(y_true, y_pred, frac=0.2):
+    """Доля совпадения топ-frac линий по прогнозу и по факту.
+
+    Селекционная метрика: какую часть лучших линий мы реально отобрали бы.
+    Случайный уровень = frac (например 0.2 для топ-20%).
+    """
+    y_true = np.asarray(y_true, dtype=np.float64)
+    y_pred = np.asarray(y_pred, dtype=np.float64)
+    k = max(1, int(round(len(y_true) * frac)))
+    top_t = set(np.argsort(y_true)[-k:])
+    top_p = set(np.argsort(y_pred)[-k:])
+    return len(top_t & top_p) / k
+
+
 def _center_by_train(Xtr, Xte):
     """Центрирование по средним train-части (test тянем тем же смещением)."""
     mean_tr = Xtr.mean(axis=0)

@@ -17,6 +17,7 @@ data.cimmyt.org (hdl:11529/10907). Сырых маркеров там нет, з
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 import pyreadr
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
@@ -45,3 +46,18 @@ def load_maize(data_dir=None):
     Gdf = r["G"]
     return dict(pheno=pheno, G=Gdf.to_numpy(dtype=np.float64),
                 g_ids=Gdf.index.to_numpy())
+
+
+def load_dryad_maize(data_dir=None):
+    """Кукуруза CIMMYT с Dryad (мульти-поколенческий набор 2017-2020).
+
+    Отдаёт dict(pheno, X, marker_names): pheno — таблица
+    [GID, Year, GY/PH/AD x Optimal/Drought], X — маркеры 0/1 (4612 шт.),
+    строки X выровнены по порядку строк pheno (по GID).
+    """
+    d = Path(data_dir) if data_dir else DATA_DIR
+    ph = pd.read_csv(d / "Pheno_data.csv")
+    g = pd.read_csv(d / "Geno_data.csv").set_index("GID")
+    g = g.loc[ph["GID"]]   # выравниваю маркеры под порядок фенотипов
+    return dict(pheno=ph, X=g.to_numpy(dtype=np.float64),
+                marker_names=np.array(g.columns))
